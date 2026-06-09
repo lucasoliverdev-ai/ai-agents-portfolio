@@ -1,0 +1,43 @@
+{
+  "agent_id": "27072",
+  "agent_name": "Lead ICP - Tráfego Pago",
+  "type": "master",
+  "platform": "SellFlux",
+  "channel": "WhatsApp",
+  "status": "Worker",
+  "client": "Venda+",
+  "ai_profile": "Autônomo",
+  "objective": "Qualificar leads oriundos de formulários de tráfego pago via conversa no WhatsApp e encaminhar qualificados para agendamento comercial",
+  "entry_condition": {
+    "type": "decision_by_tag",
+    "node_id": 2,
+    "tags": ["leadicp-leadforms"],
+    "fallback": "ELSE (Padrão)"
+  },
+  "nodes": [
+    { "id": 1, "type": "trigger", "name": "Início" },
+    { "id": 2, "type": "decision_by_tags", "name": "Decisão por Tags", "conditions": ["leadicp-leadforms", "ELSE (Padrão)"] },
+    { "id": 4, "type": "ai_agent", "name": "Agente IA", "profile": "Autônomo" },
+    { "id": 9, "type": "delay", "name": "Delay" },
+    { "id": 10, "type": "send_message", "name": "Enviar mensagem de Texto" },
+    { "id": 3, "type": "end", "name": "Finalizar atendimento" }
+  ],
+  "tools": [
+    { "name": "Extrair dados da conversa", "count": 4, "function": "Captura informações-chave durante a qualificação" },
+    { "name": "Chats de Atendimentos Antigos", "count": 1, "function": "Recupera histórico de conversas anteriores do lead" },
+    { "name": "Transferir para outra Estratégia de Agente", "count": 2, "function": "Roteamento para subagente correto após decisão" },
+    { "name": "Add Tags", "count": 1, "function": "Atualiza status do lead no CRM via tags" }
+  ],
+  "crm_integration": {
+    "enabled": true,
+    "method": "automatic_tags",
+    "description": "Tags adicionadas automaticamente movem o lead entre colunas do CRM"
+  },
+  "subagents": [
+    {
+      "id": "27073",
+      "name": "Lead Qualificado ICP - Tráfego Pago",
+      "condition": "Lead aprovado na qualificação"
+    }
+  ]
+}

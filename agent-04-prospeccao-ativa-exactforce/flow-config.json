@@ -1,0 +1,69 @@
+{
+  "agent_name": "Pré Qualificação - ExactForce",
+  "type": "master",
+  "platform": "SellFlux",
+  "channel": "WhatsApp",
+  "status": "Ativo",
+  "client": "ExactForce",
+  "ai_profile": "Autônomo",
+  "objective": "Pré-qualificar leads de prospecção ativa via WhatsApp e encaminhar para subagente de agendamento ou encerramento",
+  "funnel_context": "Prospecção ativa com sequências de disparo em lotes. Lead responde ao disparo e entra no funil de qualificação.",
+  "prospecting_batches": {
+    "strategy": "Sequências de disparo por lotes diários",
+    "batches": [
+      { "id": "abr26-1", "leads": 19 },
+      { "id": "abr26-2", "leads": 20 },
+      { "id": "abr26-3", "leads": 20 },
+      { "id": "abr26-4", "leads": 20 },
+      { "id": "abr26-5", "leads": 20 },
+      { "id": "abr26-6", "leads": 20 },
+      { "id": "abr26-7", "leads": 37 },
+      { "id": "abr26-8", "leads": 62 },
+      { "id": "abr26-9", "leads": 43 },
+      { "id": "abr26-10", "leads": 45 }
+    ],
+    "total_leads": 306,
+    "outcome_tags": ["prospec-conectado", "leadqualificado-prospeccaoativa"]
+  },
+  "entry_condition": {
+    "type": "decision_by_tag",
+    "node_id": 7,
+    "tags": ["lead-prospeccaoativa"],
+    "fallback": "ELSE (Padrão)"
+  },
+  "nodes": [
+    { "id": 1, "type": "trigger", "name": "Início" },
+    { "id": 7, "type": "decision_by_tags", "name": "Decisão por Tags" },
+    { "id": 17, "type": "add_tags", "name": "Add Tags" },
+    { "id": 14, "type": "remove_tags", "name": "Remover Tags" },
+    { "id": 2, "type": "ai_agent", "name": "Agente IA", "profile": "Autônomo" },
+    { "id": 6, "type": "send_message", "name": "Enviar mensagem de Texto" },
+    { "id": 15, "type": "end", "name": "Finalizar Atendimento" }
+  ],
+  "tools": [
+    { "name": "Chats de Atendimentos Antigos", "count": 1, "function": "Histórico de interações anteriores do lead" },
+    { "name": "Transferir para outra Estratégia de Agente", "count": 4, "function": "Roteamento para subagentes conforme decisão da qualificação" },
+    { "name": "RAG", "count": 3, "function": "Base de conhecimento de produto, empresa e argumentos de prospecção" },
+    { "name": "Add Tags", "count": 2, "function": "Atualização de status no CRM" },
+    { "name": "Extrair dados da conversa", "count": 3, "function": "Captura dados relevantes durante a qualificação" }
+  ],
+  "crm_integration": {
+    "enabled": true,
+    "method": "automatic_tags",
+    "on_entry": "Add Tags de origem (prospecção ativa)",
+    "on_reset": "Remove tags ao iniciar qualificação",
+    "tracking": "Rastreabilidade por lote de disparo (abr26-N)"
+  },
+  "subagents": [
+    {
+      "name": "Qualificado - ExactForce",
+      "condition": "Lead aprovado na pré-qualificação",
+      "path": "./subagents/sub-01-qualificado"
+    },
+    {
+      "name": "Desqualificado - ExactForce",
+      "condition": "Lead reprovado na pré-qualificação",
+      "path": "./subagents/sub-02-desqualificado"
+    }
+  ]
+}

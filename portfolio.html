@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Agents Portfolio · Lucas Oliveira</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #080c10;
+    --surface: #0d1117;
+    --surface2: #141a22;
+    --border: #1e2730;
+    --green: #00e676;
+    --green-dim: #00e67622;
+    --green-mid: #00e67644;
+    --orange: #ff8f00;
+    --orange-dim: #ff8f0018;
+    --red: #ff3d3d;
+    --blue: #4fc3f7;
+    --blue-dim: #4fc3f718;
+    --text: #e8edf3;
+    --text-muted: #6b7785;
+    --text-dim: #3d4a58;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    padding: 72px 0 48px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+
+  h1 span { color: var(--green); }
+
+  .header-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .meta-value {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* STACK */
+  .stack-section {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .stack-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-muted);
+    background: var(--surface);
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+
+  .pill:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-dim);
+  }
+
+  /* AGENTS GRID */
+  .agents-section { padding: 60px 0; }
+
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 24px;
+  }
+
+  /* AGENT CARD */
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .agent-card:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .agent-card:nth-child(1) { animation-delay: 0.1s; }
+  .agent-card:nth-child(2) { animation-delay: 0.2s; }
+  .agent-card:nth-child(3) { animation-delay: 0.3s; }
+  .agent-card:nth-child(4) { animation-delay: 0.4s; }
+
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .card-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .card-client {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .status-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .status-ativo { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid); }
+  .status-worker { background: var(--blue-dim); color: var(--blue); border: 1px solid #4fc3f733; }
+  .status-desativado { background: #ff3d3d12; color: var(--red); border: 1px solid #ff3d3d22; }
+
+  .card-body { padding: 20px 24px; }
+
+  .card-objective {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  /* Flow diagram */
+  .flow-mini {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px;
+    margin-bottom: 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .flow-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+  }
+
+  .flow-node-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+
+  .node-trigger { background: #1a2744; color: var(--blue); border: 1px solid #4fc3f733; }
+  .node-ai { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid); }
+  .node-decision { background: var(--orange-dim); color: var(--orange); border: 1px solid #ff8f0033; }
+  .node-action { background: #1a1a2e; color: #9c9cff; border: 1px solid #9c9cff22; }
+  .node-end { background: #2a0d0d; color: var(--red); border: 1px solid #ff3d3d22; }
+  .node-sub { background: #0d1f1a; color: #00bfa5; border: 1px solid #00bfa533; }
+
+  .flow-arrow {
+    color: var(--text-dim);
+    padding-left: 28px;
+    font-size: 10px;
+  }
+
+  /* Tools */
+  .tools-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .tool-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-muted);
+    background: var(--surface2);
+  }
+
+  /* Subagents */
+  .subagents-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .subagent-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 6px;
+    transition: border-color 0.2s;
+  }
+
+  .subagent-item:hover { border-color: #00bfa5; }
+
+  .subagent-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #00bfa5;
+    flex-shrink: 0;
+  }
+
+  .subagent-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .subagent-condition {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .no-subagents {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 10px 0;
+  }
+
+  /* CRM badge */
+  .crm-banner {
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: #0a1f14;
+    border: 1px solid #00e67633;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+  }
+
+  .crm-banner::before {
+    content: '⟳';
+    font-size: 14px;
+  }
+
+  /* ARCHITECTURE */
+  .arch-section {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .arch-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .arch-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 2;
+    overflow-x: auto;
+  }
+
+  .arch-highlight { color: var(--green); font-weight: 700; }
+  .arch-dim { color: var(--text-dim); }
+  .arch-orange { color: var(--orange); }
+  .arch-blue { color: var(--blue); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 16px;
+  }
+
+  .footer-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .footer-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 600px) {
+    .agents-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-tag">Portfólio de Agentes IA · WhatsApp · SellFlux</div>
+    <h1>Conversational<br/><span>AI Agents</span></h1>
+    <p class="header-sub">
+      Ecossistema de agentes de inteligência artificial autônomos para qualificação, atendimento e prospecção de leads via WhatsApp — integrados a CRM, Google Agenda e APIs externas.
+    </p>
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Agentes Master</span>
+        <span class="meta-value">04</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Subagentes</span>
+        <span class="meta-value">05</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Canal</span>
+        <span class="meta-value">WhatsApp</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Plataforma</span>
+        <span class="meta-value">SellFlux</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Clientes</span>
+        <span class="meta-value">Venda+ · ExactForce</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- STACK -->
+  <div class="stack-section">
+    <div class="section-label">Stack Tecnológica</div>
+    <div class="stack-pills">
+      <span class="pill">SellFlux</span>
+      <span class="pill">WhatsApp API</span>
+      <span class="pill">LLM Autônomo</span>
+      <span class="pill">RAG</span>
+      <span class="pill">Google Agenda</span>
+      <span class="pill">CRM Interno</span>
+      <span class="pill">API REST</span>
+      <span class="pill">Tag Automation</span>
+      <span class="pill">Multi-Agent Orchestration</span>
+      <span class="pill">Conversation Memory</span>
+    </div>
+  </div>
+
+  <!-- AGENTS -->
+  <div class="agents-section">
+    <div class="section-label" style="margin-bottom:28px">Agentes · 04 sistemas</div>
+    <div class="agents-grid">
+
+      <!-- AGENT 01 -->
+      <div class="agent-card">
+        <div class="card-header">
+          <div>
+            <div class="card-id">AGENT · 01 · ID:27072</div>
+            <div class="card-title">Lead ICP · Tráfego Pago</div>
+            <div class="card-client">Cliente: Venda+</div>
+          </div>
+          <span class="status-badge status-worker">Worker</span>
+        </div>
+        <div class="card-body">
+          <p class="card-objective">
+            Recebe leads de formulários de tráfego pago, conduz qualificação autônoma via WhatsApp e encaminha qualificados para agendamento comercial automático no Google Agenda.
+          </p>
+          <div class="flow-mini">
+            <div class="flow-node"><span class="flow-node-icon node-trigger">▶</span> Trigger — leadicp-leadforms</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node"><span class="flow-node-icon node-decision">⬡</span> Decisão por Tags</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node"><span class="flow-node-icon node-ai">◉</span> Agente IA — Perfil Autônomo</div>
+            <div class="flow-arrow">↓ qualificado</div>
+            <div class="flow-node"><span class="flow-node-icon node-sub">→</span> Subagente — Agendamento</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node"><span class="flow-node-icon node-end">✕</span> Finalizar Atendimento</div>
+          </div>
+          <div class="tools-label">Tools do Agente IA</div>
+          <div class="tools-list">
+            <span class="tool-tag">Extrair dados (x4)</span>
+            <span class="tool-tag">Chats Antigos</span>
+            <span class="tool-tag">Transferir Estratégia (x2)</span>
+            <span class="tool-tag">Add Tags</span>
+          </div>
+          <div class="subagents-label">Subagentes</div>
+          <div class="subagent-item">
+            <div class="subagent-dot"></div>
+            <div class="subagent-name">Lead Qualificado ICP</div>
+            <div class="subagent-condition">se qualificado</div>
+          </div>
+          <div class="crm-banner">CRM atualizado via tags automáticas em cada etapa</div>
+        </div>
+      </div>
+
+      <!-- AGENT 02 -->
+      <div class="agent-card">
+        <div class="card-header">
+          <div>
+            <div class="card-id">AGENT · 02 · ID:29594</div>
+            <div class="card-title">Atendimento Farmacêutico</div>
+            <div class="card-client">Cliente: Venda+</div>
+          </div>
+          <span class="status-badge status-desativado">Desativado</span>
+        </div>
+        <div class="card-body">
+          <p class="card-objective">
+            Atende clientes de farmácia no WhatsApp em 3 jornadas: consulta de preço, recomendação por sintoma via RAG e verificação de receita com consulta de estoque via API em tempo real — finalizando em venda.
+          </p>
+          <div class="flow-mini">
+            <div class="flow-node"><span class="flow-node-icon node-trigger">▶</span> Trigger — lead-captado</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node"><span class="flow-node-icon node-ai">◉</span> Agente IA — Perfil Subautônomo</div>
+            <div class="flow-arrow">↓ jornada detectada</div>
+            <div class="flow-node"><span class="flow-node-icon node-action">⬡</span> RAG · API Estoque · CRM</div>
+            <div class="flow-arrow">↓ conversão</div>
+            <div class="flow-node"><span class="flow-node-icon node-end">✕</span> Venda Finalizada</div>
+          </div>
+          <div class="tools-label">Tools do Agente IA</div>
+          <div class="tools-list">
+            <span class="tool-tag">RAG (x6)</span>
+            <span class="tool-tag">Consulta API Estoque</span>
+            <span class="tool-tag">Criar Registro CRM</span>
+            <span class="tool-tag">Memória de Atendimento</span>
+            <span class="tool-tag">Políticas e Regras</span>
+            <span class="tool-tag">Transferir p/ Fila</span>
+            <span class="tool-tag">Extrair dados (x5)</span>
+          </div>
+          <div class="subagents-label">Subagentes</div>
+          <p class="no-subagents">— Agente standalone · sem subagentes</p>
+          <div class="crm-banner">CRM atualizado via tags automáticas em cada etapa</div>
+        </div>
+      </div>
+
+      <!-- AGENT 03 -->
+      <div class="agent-card">
+        <div class="card-header">
+          <div>
+            <div class="card-id">AGENT · 03 · ID:30794</div>
+            <div class="card-title">Qualificação Leads · IA de Ligação</div>
+            <div class="card-client">Cliente: Venda+</div>
+          </div>
+          <span class="status-badge status-ativo">Ativo</span>
+        </div>
+        <div class="card-body">
+          <p class="card-objective">
+            Parte de funil multicanal (IA de ligação + WhatsApp). Recebe leads interessados após ligação de IA, conduz qualificação completa e ramifica para agendamento (qualificado) ou última tentativa de conversão (desqualificado).
+          </p>
+          <div class="flow-mini">
+            <div class="flow-node"><span class="flow-node-icon node-trigger">▶</span> Trigger — leadpitchyes</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node"><span class="flow-node-icon node-action">⊗</span> Remover Tags (reset)</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node"><span class="flow-node-icon node-ai">◉</span> Agente IA — Perfil Autônomo</div>
+            <div class="flow-arrow">↓ qualificado</div>
+            <div class="flow-node"><span class="flow-node-icon node-sub">→</span> Sub 3.1 — Agendamento</div>
+            <div class="flow-arrow">↓ desqualificado</div>
+            <div class="flow-node"><span class="flow-node-icon node-sub">→</span> Sub 3.2 — Última conversão</div>
+          </div>
+          <div class="tools-label">Tools do Agente IA</div>
+          <div class="tools-list">
+            <span class="tool-tag">RAG (x4)</span>
+            <span class="tool-tag">Criar Registro CRM</span>
+            <span class="tool-tag">Acessar Links</span>
+            <span class="tool-tag">Add Tag (Tool)</span>
+            <span class="tool-tag">Políticas e Regras</span>
+            <span class="tool-tag">Chats Antigos</span>
+          </div>
+          <div class="subagents-label">Subagentes</div>
+          <div class="subagent-item">
+            <div class="subagent-dot"></div>
+            <div class="subagent-name">Lead Qualificado IA de Ligação</div>
+            <div class="subagent-condition">se qualificado</div>
+          </div>
+          <div class="subagent-item">
+            <div class="subagent-dot" style="background:#ff8f00"></div>
+            <div class="subagent-name">Lead Desqualificado IA de Ligação</div>
+            <div class="subagent-condition">se desqualificado</div>
+          </div>
+          <div class="crm-banner">CRM atualizado via tags automáticas em cada etapa</div>
+        </div>
+      </div>
+
+      <!-- AGENT 04 -->
+      <div class="agent-card">
+        <div class="card-header">
+          <div>
+            <div class="card-id">AGENT · 04 · ExactForce</div>
+            <div class="card-title">Pré Qualificação · Prospecção Ativa</div>
+            <div class="card-client">Cliente: ExactForce</div>
+          </div>
+          <span class="status-badge status-ativo">Ativo</span>
+        </div>
+        <div class="card-body">
+          <p class="card-objective">
+            Sistema de prospecção ativa com sequências de disparo em lotes (306 leads em 10 lotes rastreados). Lead responde ao disparo → agente conduz qualificação → qualificado agenda reunião, desqualificado é encerrado com respeito.
+          </p>
+          <div class="flow-mini">
+            <div class="flow-node"><span class="flow-node-icon node-action">⬡</span> Disparos em lote (abr26-1 a 10)</div>
+            <div class="flow-arrow">↓ lead responde</div>
+            <div class="flow-node"><span class="flow-node-icon node-trigger">▶</span> Trigger — lead-prospeccaoativa</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node"><span class="flow-node-icon node-ai">◉</span> Agente IA — Perfil Autônomo</div>
+            <div class="flow-arrow">↓ qualificado</div>
+            <div class="flow-node"><span class="flow-node-icon node-sub">→</span> Sub 4.1 — Agendamento Comercial</div>
+            <div class="flow-arrow">↓ desqualificado</div>
+            <div class="flow-node"><span class="flow-node-icon node-sub">→</span> Sub 4.2 — Encerramento</div>
+          </div>
+          <div class="tools-label">Tools do Agente IA</div>
+          <div class="tools-list">
+            <span class="tool-tag">RAG (x3)</span>
+            <span class="tool-tag">Chats Antigos</span>
+            <span class="tool-tag">Extrair dados (x3)</span>
+            <span class="tool-tag">Transferir Estratégia (x4)</span>
+            <span class="tool-tag">Add Tags (x2)</span>
+          </div>
+          <div class="subagents-label">Subagentes</div>
+          <div class="subagent-item">
+            <div class="subagent-dot"></div>
+            <div class="subagent-name">Qualificado — ExactForce</div>
+            <div class="subagent-condition">se qualificado</div>
+          </div>
+          <div class="subagent-item">
+            <div class="subagent-dot" style="background:#ff3d3d"></div>
+            <div class="subagent-name">Desqualificado — ExactForce</div>
+            <div class="subagent-condition">se desqualificado</div>
+          </div>
+          <div class="crm-banner">CRM atualizado via tags automáticas em cada etapa</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <div class="arch-section">
+    <div class="arch-title">Padrão Arquitetural</div>
+    <p class="arch-sub">Todos os agentes seguem o mesmo padrão de design — Master → Subagente → CRM</p>
+    <div class="arch-diagram">
+<span class="arch-highlight">Lead entra via WhatsApp</span>
+      <span class="arch-dim">│</span>
+      <span class="arch-dim">▼</span>
+<span class="arch-orange">[ Decisão por Tags ]</span>  ←  Identifica origem e estado do lead
+      <span class="arch-dim">│</span>
+      <span class="arch-dim">▼</span>
+<span class="arch-highlight">[ Agente IA Master ]</span>  ←  LLM Autônomo com RAG + Tools
+      <span class="arch-dim">│</span>
+      <span class="arch-dim">├─── RAG (base de conhecimento)</span>
+      <span class="arch-dim">├─── Extrair dados da conversa</span>
+      <span class="arch-dim">├─── Chats Antigos (memória)</span>
+      <span class="arch-dim">├─── Criar Registro CRM</span>
+      <span class="arch-dim">└─── Add/Remove Tags  ──────────────→  </span><span class="arch-highlight">CRM Pipeline atualizado</span>
+      <span class="arch-dim">│</span>
+   <span class="arch-dim">┌──┴──┐</span>
+   <span class="arch-dim">│</span>     <span class="arch-dim">│</span>
+<span class="arch-highlight">Qualif.</span>  <span class="arch-orange">Desqualif.</span>
+   <span class="arch-dim">│</span>     <span class="arch-dim">│</span>
+<span class="arch-blue">[ Sub A ]</span>  <span class="arch-blue">[ Sub B ]</span>  ←  Agentes especializados
+<span class="arch-dim">Agendar</span>  <span class="arch-dim">Nutrir/</span>
+<span class="arch-dim">Reunião</span>  <span class="arch-dim">Encerrar</span>
+   <span class="arch-dim">│</span>
+   <span class="arch-dim">▼</span>
+<span class="arch-highlight">Google Agenda</span>  ←  Reunião criada automaticamente
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <div class="footer-name">Lucas Oliveira</div>
+      <div class="footer-meta" style="margin-top:4px">Desenvolvedor de Agentes IA Conversacional</div>
+    </div>
+    <div class="footer-meta">
+      SellFlux · WhatsApp · CRM · Google Agenda
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

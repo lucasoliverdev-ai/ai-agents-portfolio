@@ -1,0 +1,55 @@
+{
+  "agent_id": "30794",
+  "agent_name": "Qualificação Leads [IA de Ligação]",
+  "type": "master",
+  "platform": "SellFlux",
+  "channel": "WhatsApp",
+  "status": "Ativo",
+  "client": "Venda+",
+  "ai_profile": "Autônomo",
+  "objective": "Qualificar via WhatsApp leads que demonstraram interesse durante ligação de IA telefônica e encaminhar para subagente adequado",
+  "funnel_context": "Parte de funil multicanal: IA de Ligação → WhatsApp → Agendamento",
+  "entry_condition": {
+    "type": "decision_by_tag",
+    "node_id": 18,
+    "tags": ["leadpitchyes"],
+    "fallback": "ELSE (Padrão)"
+  },
+  "nodes": [
+    { "id": 1, "type": "trigger", "name": "Início" },
+    { "id": 18, "type": "decision_by_tags", "name": "Decisão por Tags" },
+    { "id": 25, "type": "remove_tags", "name": "Remover Tags" },
+    { "id": 2, "type": "ai_agent", "name": "Agente IA", "profile": "Autônomo" },
+    { "id": 16, "type": "typing", "name": "Digitando" },
+    { "id": 7, "type": "send_message", "name": "Mensagem de Texto" },
+    { "id": 21, "type": "end", "name": "Finalizar Atendimento" }
+  ],
+  "tools": [
+    { "name": "RAG", "count": 4, "function": "Base de conhecimento: produto, empresa, objeções e argumentos de venda" },
+    { "name": "Acessar Links", "count": 1, "function": "Acesso a links externos relevantes durante a conversa" },
+    { "name": "Criar Registro CRM (Tool)", "count": 1, "function": "Registra lead no CRM automaticamente" },
+    { "name": "Add Tag (Tool)", "count": 1, "function": "Adiciona tags de qualificação ao lead" },
+    { "name": "Políticas e Regras", "count": 1, "function": "Diretrizes de atendimento e compliance" },
+    { "name": "Chats Antigos", "count": 1, "function": "Histórico de interações anteriores do lead" },
+    { "name": "Transferir para Estratégia", "count": 2, "function": "Roteamento para subagente correto conforme resultado" },
+    { "name": "Adicionar tag", "count": 2, "function": "Tags de segmentação pós-qualificação" }
+  ],
+  "crm_integration": {
+    "enabled": true,
+    "method": "automatic_tags",
+    "on_entry": "Remove tags anteriores para reset de estado",
+    "on_exit": "Adiciona tag de resultado (qualificado/desqualificado)"
+  },
+  "subagents": [
+    {
+      "name": "Lead Qualificado IA de Ligação",
+      "condition": "Lead aprovado na qualificação",
+      "path": "./subagents/sub-01-lead-qualificado"
+    },
+    {
+      "name": "Lead Desqualificado IA de Ligação",
+      "condition": "Lead reprovado na qualificação",
+      "path": "./subagents/sub-02-lead-desqualificado"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "agent_id": "29594",
+  "agent_name": "Atendimento Farmacêutico",
+  "type": "master",
+  "platform": "SellFlux",
+  "channel": "WhatsApp",
+  "status": "Desativado",
+  "client": "Venda+",
+  "ai_profile": "Subautônomo",
+  "objective": "Atendimento automatizado de clientes de farmácia via WhatsApp com 3 jornadas: consulta de preço, recomendação por sintoma e verificação de receita",
+  "entry_condition": {
+    "type": "decision_by_tag",
+    "node_id": 39,
+    "tags": ["lead-captado"],
+    "fallback": "ELSE (Padrão)"
+  },
+  "journeys": [
+    {
+      "name": "Consulta de Preço",
+      "trigger": "Cliente pergunta preço de produto",
+      "action": "Consulta RAG e responde com valor"
+    },
+    {
+      "name": "Recomendação por Sintoma",
+      "trigger": "Cliente descreve sintoma",
+      "action": "IA sugere remédio via RAG de sintomas pré-definidos"
+    },
+    {
+      "name": "Verificação de Receita",
+      "trigger": "Cliente envia receita médica",
+      "action": "IA consulta API de estoque e confirma disponibilidade"
+    }
+  ],
+  "nodes": [
+    { "id": 1, "type": "trigger", "name": "Início" },
+    { "id": "add_tags_init", "type": "add_tags", "name": "Add Tags" },
+    { "id": 39, "type": "decision_by_tags", "name": "Decisão por Tags" },
+    { "id": "delay_1", "type": "delay", "name": "Delay" },
+    { "id": 2, "type": "ai_agent", "name": "Agente IA", "profile": "Subautônomo" },
+    { "id": "delay_2", "type": "delay", "name": "Delay" },
+    { "id": "send_text", "type": "send_message", "name": "Enviar mensagem de Texto" },
+    { "id": "end", "type": "end", "name": "Finalizar Atendimento" }
+  ],
+  "tools": [
+    { "name": "Consulta API (Estoque/TAL)", "count": 1, "function": "Verifica disponibilidade de medicamentos em tempo real" },
+    { "name": "RAG", "count": 6, "function": "Base de conhecimento de produtos, sintomas e recomendações farmacêuticas" },
+    { "name": "Criar Registro CRM", "count": 1, "function": "Registra cliente no CRM automaticamente" },
+    { "name": "Atualizar Memória de Atendimento", "count": 1, "function": "Mantém contexto da conversa persistente" },
+    { "name": "Políticas e Regras da Empresa", "count": 1, "function": "Garante respostas dentro das diretrizes farmacêuticas" },
+    { "name": "Chats de Atendimentos Antigos", "count": 1, "function": "Histórico de atendimentos anteriores do cliente" },
+    { "name": "Transferir para Fila de Atendimento", "count": 1, "function": "Escalada para atendente humano quando necessário" },
+    { "name": "Add Tags", "count": 3, "function": "Segmentação e atualização de status no CRM" },
+    { "name": "Extrair dados da conversa", "count": 5, "function": "Captura informações relevantes do cliente" },
+    { "name": "Produtos", "count": 1, "function": "Catálogo de produtos disponíveis na farmácia" }
+  ],
+  "crm_integration": {
+    "enabled": true,
+    "method": "automatic_tags",
+    "description": "Registro criado automaticamente, memória atualizada a cada atendimento"
+  },
+  "integrations": ["API de Estoque (TAL)"],
+  "subagents": []
+}

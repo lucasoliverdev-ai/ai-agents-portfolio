@@ -1,0 +1,37 @@
+{
+  "agent_id": "27073",
+  "agent_name": "Lead Qualificado ICP - Tráfego Pago",
+  "type": "subagent",
+  "parent_agent_id": "27072",
+  "platform": "SellFlux",
+  "channel": "WhatsApp",
+  "status": "Worker",
+  "client": "Venda+",
+  "ai_profile": "Autônomo",
+  "objective": "Agendar reunião no Google Agenda da área comercial para lead qualificado oriundo de tráfego pago",
+  "activation_condition": "Lead qualificado pelo agente master 27072",
+  "nodes": [
+    { "id": 1, "type": "trigger", "name": "Início" },
+    { "id": 2, "type": "ai_agent", "name": "Agente IA", "profile": "Autônomo" },
+    { "id": 6, "type": "router", "name": "Roteador", "conditions": ["Lead já escolheu horário", "ELSE (Padrão)"] },
+    { "id": 7, "type": "delay", "name": "Delay" },
+    { "id": 11, "type": "split", "name": "Split" },
+    { "id": 12, "type": "predefined_message", "name": "Mensagem Predefinida - Confirmação de Agendamento" },
+    { "id": 8, "type": "send_text", "name": "Enviar mensagem de Texto" },
+    { "id": 10, "type": "remove_tags", "name": "Remover Tags" },
+    { "id": 9, "type": "add_tags", "name": "Add Tags" },
+    { "id": 18, "type": "end", "name": "Finalizar Atendimento" }
+  ],
+  "tools": [
+    { "name": "Agenda", "function": "Cria evento no Google Agenda da área comercial" },
+    { "name": "Extrair dados da conversa", "function": "Captura preferência de horário e dados do lead" },
+    { "name": "Chats de Atendimentos Antigos", "function": "Recupera histórico de conversas anteriores" }
+  ],
+  "crm_integration": {
+    "enabled": true,
+    "method": "automatic_tags",
+    "tags_added": ["lead-agendado"],
+    "pipeline_stage": "Reunião Agendada"
+  },
+  "integrations": ["Google Agenda"]
+}
