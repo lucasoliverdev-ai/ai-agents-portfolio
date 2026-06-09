@@ -112,5 +112,5 @@ ai-agents-portfolio/
 ## 📬 Contato
 
 **Lucas Oliveira**
-- SellFlux: `lucasoliveira070...`
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
+- Email: `lucassoliveira070@gmail.com`
+- GitHub: lucasoliverdev-ai
