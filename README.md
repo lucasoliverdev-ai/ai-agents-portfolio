@@ -1,6 +1,6 @@
 # 🤖 Portfólio de Agentes IA Conversacional — WhatsApp
 
-> Ecossistema de agentes de inteligência artificial para atendimento, qualificação e prospecção de leads via WhatsApp, construídos na plataforma **SellFlux** com integração a CRM, Google Agenda e APIs externas.
+> Ecossistema de agentes de inteligência artificial para atendimento, qualificação e prospecção de leads via WhatsApp, com integração a CRM, Google Agenda e APIs externas.
 
 ---
 
@@ -38,7 +38,7 @@ Subagente A   Subagente B
 | # | Agente Master | Subagentes | Status | Cliente |
 |---|---|---|---|---|
 | 01 | [Lead ICP - Tráfego Pago](./agent-01-lead-icp-trafego-pago/) | 1 | Worker | Venda+ |
-| 02 | [Atendimento Farmacêutico](./agent-02-atendimento-farmaceutico/) | — | Desativado | Venda+ |
+| 02 | [Atendimento Farmacêutico](./agent-02-atendimento-farmaceutico/) | — | Ativo | Venda+ |
 | 03 | [Qualificação Leads - IA de Ligação](./agent-03-qualificacao-leads-ligacao/) | 2 | Worker | Venda+ |
 | 04 | [Pré Qualificação - Prospecção Ativa](./agent-04-prospeccao-ativa-exactforce/) | 2 | Ativo | ExactForce |
 
@@ -48,7 +48,7 @@ Subagente A   Subagente B
 
 | Tecnologia | Uso |
 |---|---|
-| **SellFlux** | Plataforma de automação e orquestração dos agentes |
+| **N8N** | Plataforma de automação e orquestração dos agentes |
 | **WhatsApp** | Canal de comunicação principal |
 | **LLM (Perfil Autônomo/Subautônomo)** | Motor de linguagem dos agentes IA |
 | **RAG** | Base de conhecimento vetorial para respostas contextuais |
